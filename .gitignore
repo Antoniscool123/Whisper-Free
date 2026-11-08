@@ -1,5 +1,8 @@
-node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
 dist/
-.vscode/
-.env
-src-tauri/target/
+*.spec.bak
+.whisper_free/

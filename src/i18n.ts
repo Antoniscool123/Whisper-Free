@@ -1,0 +1,1 @@
+export const translations={en:{title:'Whisper-Free',dashboard:'Dashboard'},da:{title:'Whisper-Free',dashboard:'Kontrolpanel'}}; export type Language='en'|'da';

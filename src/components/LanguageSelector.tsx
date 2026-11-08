@@ -1,0 +1,1 @@
+type Props={value:string,onChange:(v:string)=>void}; export default function LanguageSelector({value,onChange}:Props){return <select value={value} onChange={e=>onChange(e.target.value)}><option value='en'>English</option><option value='da'>Dansk</option></select>;}

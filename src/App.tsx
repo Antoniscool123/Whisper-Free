@@ -1,35 +1,9 @@
+import { useState } from 'react';
 import './styles.css';
+import LanguageSelector from './components/LanguageSelector';
 
-export default function App() {
-  return (
-    <div className="app">
-      <aside className="sidebar">
-        <h1>Whisper-Free</h1>
-        <nav>
-          <button>Home</button>
-          <button>Record</button>
-          <button>Files</button>
-          <button>Settings</button>
-        </nav>
-      </aside>
-
-      <main className="content">
-        <h2>Dashboard</h2>
-        <p>Free multilingual transcription.</p>
-
-        <div className="actions">
-          <button className="primary">Record Audio</button>
-          <button>Open File</button>
-        </div>
-
-        <div className="card">
-          <h3>Language</h3>
-          <select>
-            <option>Danish</option>
-            <option>English</option>
-          </select>
-        </div>
-      </main>
-    </div>
-  );
+export default function App(){
+ const [lang,setLang]=useState('en');
+ const t=lang==='da'?{dashboard:'Kontrolpanel',record:'Optag lyd',open:'Åbn fil',language:'Sprog'}:{dashboard:'Dashboard',record:'Record Audio',open:'Open File',language:'Language'};
+ return (<div className='app'><aside className='sidebar'><h1>Whisper-Free</h1></aside><main className='content'><h2>{t.dashboard}</h2><LanguageSelector value={lang} onChange={setLang}/><div className='actions'><button className='primary'>{t.record}</button><button>{t.open}</button></div></main></div>);
 }

@@ -1,0 +1,1 @@
+pub fn transcribe_placeholder() -> String { String::from("Whisper-Free transcription backend placeholder") }

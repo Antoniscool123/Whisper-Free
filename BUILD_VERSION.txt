@@ -1,0 +1,3 @@
+WhisperFree rolling release
+Build requested: 2026-11-08 11:26 GMT+01:00
+Includes polished interface, local dictation, automated tests, portable EXE, and ZIP package.

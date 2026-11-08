@@ -8,30 +8,65 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: whisperfree-windows-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  test-and-build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt pyinstaller
-      - name: Build EXE
+          pip install -r requirements.txt pyinstaller pytest
+
+      - name: Validate Python source
+        run: python -m py_compile app.py
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Build portable Windows EXE
         run: pyinstaller --clean --noconfirm WhisperFree.spec
-      - name: Upload EXE artifact
+
+      - name: Verify EXE exists
+        shell: pwsh
+        run: |
+          if (!(Test-Path "dist/WhisperFree.exe")) { throw "WhisperFree.exe was not created" }
+          Get-Item "dist/WhisperFree.exe" | Format-List Name,Length,LastWriteTime
+
+      - name: Package portable ZIP
+        shell: pwsh
+        run: Compress-Archive -Path dist/WhisperFree.exe,README.md,QUICKSTART.md,LICENSE -DestinationPath dist/WhisperFree-Windows.zip -Force
+
+      - name: Upload tested build artifact
         uses: actions/upload-artifact@v4
         with:
           name: WhisperFree-Windows
-          path: dist/WhisperFree.exe
+          path: |
+            dist/WhisperFree.exe
+            dist/WhisperFree-Windows.zip
+          if-no-files-found: error
+
       - name: Publish rolling release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Whisper Free latest build
+          name: Whisper Free latest tested build
           prerelease: true
-          files: dist/WhisperFree.exe
+          body: |
+            Automatic tested Windows build from the main branch.
+
+            Download WhisperFree-Windows.zip, extract it, and run WhisperFree.exe.
+            The first transcription downloads the selected local speech model.
+          files: |
+            dist/WhisperFree.exe
+            dist/WhisperFree-Windows.zip
